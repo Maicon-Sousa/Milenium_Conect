@@ -3,5 +3,10 @@ from . import views
 
 urlpatterns = [
     path('', views.clientes, name="clientes"),
-    path('Atualiza_cliente/', views.att_clientes, name="atualiza_cliente")
+    path('atualiza_cliente/', views.att_cliente, name="atualiza_cliente"),
+    path('excluir_carro/<int:id>', views.excluir_carro, name="excluir_carro"),
+    path('update_carro/<int:id>', views.update_carro, name="update_carro"),
+    path('update_cliente/<int:id>', views.update_cliente, name="update_cliente"),
+    path('dashboard/', views.dashboard, name="dashboard"),
+    path('add_carro_cliente/', views.add_carro_cliente, name="add_carro_cliente")
 ]

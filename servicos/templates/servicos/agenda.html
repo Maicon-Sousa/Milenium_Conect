@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'head' %}
+<style>
+    .linha-servico { border-bottom: 1px solid #444; }
+    .atrasado-hoje { background-color: #7d6608; }
+    .atrasado { background-color: #641e16; }
+</style>
+{% endblock %}
+
+{% block 'dashboard' %}
+<div class="container" style="color: white; padding: 30px;">
+    <h2 style="margin-bottom: 30px;">Agenda de Serviços</h2>
+
+    <table style="width: 100%;">
+        <thead>
+            <tr style="background-color: #C8102E;">
+                <th style="padding: 10px;">Título</th>
+                <th style="padding: 10px;">Cliente</th>
+                <th style="padding: 10px;">Data de Início</th>
+                <th style="padding: 10px;">Data de Entrega</th>
+                <th style="padding: 10px;">Status</th>
+                <th style="padding: 10px;">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in servicos %}
+            <tr class="linha-servico 
+            {% if s.data_entrega == hoje %}atrasado-hoje
+            {% elif s.data_entrega < hoje %}atrasado
+            {% endif %}">
+                <td style="padding: 10px;">{{ s.titulo }}</td>
+                <td style="padding: 10px;">{{ s.cliente.nome }} {{ s.cliente.sobrenome }}</td>
+                <td style="padding: 10px;">{{ s.data_inicio }}</td>
+                <td style="padding: 10px;">{{ s.data_entrega }}</td>
+                <td style="padding: 10px;">
+                    {% if s.data_entrega < hoje %}
+                        ⚠️ Atrasado
+                    {% elif s.data_entrega == hoje %}
+                        🔔 Entrega hoje
+                    {% else %}
+                        🔧 Em andamento
+                    {% endif %}
+                </td>
+                <td style="padding: 10px;">
+                    <a href="{% url 'servico' s.identificador %}" style="background-color: #C8102E; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none;">
+                        Ver
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center; padding: 20px;">Nenhum serviço em andamento.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block 'head' %}
+    <link rel="stylesheet" href="{% static 'clientes/css/clientes.css' %}">
+    <style>
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .finalizado { background-color: #27ae60; }
+        .andamento { background-color: #e67e22; }
+    </style>
+{% endblock %}
+
+{% block 'dashboard' %}
+<div class="container" style="color: white; padding: 30px;">
+    
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <h2>{{ servico.titulo }}</h2>
+        <span class="status-badge {% if servico.finalizado %}finalizado{% else %}andamento{% endif %}">
+            {% if servico.finalizado %} ✅ Finalizado {% else %} 🔧 Em andamento {% endif %}
+</span>
+    </div>
+
+    <div style="background-color: #2a2a2a; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+        <h4 style="color: #C8102E;">Informações do Serviço</h4>
+        <hr style="border-color: #444;">
+        <p><strong>Cliente:</strong> {{ servico.cliente.nome }} {{ servico.cliente.sobrenome }}</p>
+        <p><strong>Data de Início:</strong> {{ servico.data_inicio }}</p>
+        <p><strong>Data de Entrega:</strong> {{ servico.data_entrega }}</p>
+        <p><strong>Protocolo:</strong> {{ servico.protocolo }}</p>
+    </div>
+
+    <div style="background-color: #2a2a2a; border-radius: 10px; padding: 20px; margin-bottom: 20px;">
+        <h4 style="color: #C8102E;">Manutenções</h4>
+        <hr style="border-color: #444;">
+        <ul>
+            {% for m in servico.categoria_manutencao.all %}
+            <li>{{ m.get_titulo_display }} — R$ {{ m.preco }}</li>
+            {% endfor %}
+        </ul>
+        <strong>Total: R$ {{ servico.preco_total }}</strong>
+    </div>
+
+    <div style="display: flex; gap: 10px;">
+        <a href="{% url 'gerar_os' servico.identificador %}" style="background-color: #C8102E; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+            📄 Gerar OS
+        </a>
+
+        {% if not servico.finalizado %}
+        <a href="{% url 'finalizar_servico' servico.identificador %}" style="background-color: #27ae60; color: white; padding: 10px 20px; 
+            border-radius: 5px; text-decoration: none;"onclick="return confirm('Finalizar este serviço?')">
+            ✅ Finalizar Serviço
+        </a>
+        {% endif %}
+
+        <a href="{% url 'listar_servico' %}" style="background-color: #444; color: white; padding: 10px 20px; border-radius: 5px; text-decoration: none;">
+            ← Voltar
+        </a>
+    </div>
+
+</div>
+{% endblock %}
