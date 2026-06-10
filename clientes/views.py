@@ -8,7 +8,9 @@ from django.shortcuts import redirect, get_object_or_404
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from servicos.models import Servico
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def clientes(request):
     if request.method == "GET":
         clientes_list = Cliente.objects.all()
@@ -46,7 +48,7 @@ def clientes(request):
 
         return redirect('clientes')      
 
-
+@login_required
 def att_cliente(request):
     id_cliente = request.POST.get('id_cliente')
     cliente = Cliente.objects.filter(id=id_cliente)
@@ -58,6 +60,7 @@ def att_cliente(request):
     data = {'cliente': cliente_json, 'carros': carros_json, 'cliente_id': cliente_id}
     return JsonResponse(data)
 
+@login_required
 def excluir_carro(request, id):
     try:
         carro = Carro.objects.get(id=id)
@@ -66,6 +69,7 @@ def excluir_carro(request, id):
     except:
         return redirect(reverse('clientes')+f'?aba=att_cliente&id_cliente={id}')
 
+@login_required
 @csrf_exempt
 def update_carro(request, id):
     nome_carro = request.POST.get('carro')
@@ -85,6 +89,7 @@ def update_carro(request, id):
 
     return redirect(reverse('clientes'))
 
+@login_required
 def update_cliente(request, id):
     body = json.loads(request.body)
 
@@ -104,6 +109,7 @@ def update_cliente(request, id):
     except:
         return JsonResponse({'status': '500'})
     
+@login_required
 def add_carro_cliente(request):
     id_cliente = request.POST.get('id_cliente')
     carro = request.POST.get('carro')
@@ -116,6 +122,7 @@ def add_carro_cliente(request):
     
     return JsonResponse({'status': '200'})
 
+@login_required
 def dashboard(request):
     from servicos.models import Servico
     from datetime import date
@@ -147,6 +154,7 @@ def dashboard(request):
     }
     return render(request, 'dashboard.html', context)
 
+@login_required
 def servicos_cliente(request, id_cliente):
     cliente = get_object_or_404(Cliente, id=id_cliente)
     servicos = Servico.objects.filter(cliente=cliente).order_by('-id')
