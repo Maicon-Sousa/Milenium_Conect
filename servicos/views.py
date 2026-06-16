@@ -58,8 +58,7 @@ def gerar_os(request, identificador):
     pdf.cell(35, 10, 'Valor Total:', 1, 0, 'L', 1)
     pdf.cell(0, 10, f'R$ {servico.preco_total():.2f}', 1, 1, 'L', 1)
     
-    pdf_content = pdf.output(dest='S').encode('latin1')
-    pdf_bytes = BytesIO(pdf_content)
+    pdf_bytes = BytesIO(bytes(pdf.output()))
     
     return FileResponse(pdf_bytes, as_attachment=True, filename=f'OS_{servico.protocolo}.pdf')
 
